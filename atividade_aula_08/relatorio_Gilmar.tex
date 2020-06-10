@@ -1,5 +1,5 @@
 \documentclass[a4paper,12pt]{article}
-\usepackage[top = 2.5cm, bottom = 2.5cm, left = 2.5cm, right = 2.5cm]{geometry}
+\usepackage[top = 2cm, bottom = 2cm, left = 2cm, right = 2cm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 
@@ -13,7 +13,7 @@
 % \setlength{\parindent}{0in}
 
 \usepackage{float}
-
+\usepackage{hyperref}
 \usepackage{fancyhdr}
 \usepackage{fancyvrb}
 \pagestyle{fancy}
@@ -37,7 +37,7 @@
 \begin{tabular}{p{15.5cm}}
 
 {\large \bf Teoria da Computação} \\
-UNESP - Univerisade Estadual Paulista - Presidente Prudente\\ SEM1 2020  \\ Celso\\
+UNESP - Univerisade Estadual Paulista - Presidente Prudente\\ SEM1 2020  \\Celso Olivete Júnior\\
 \hline
 \\
 \end{tabular}
@@ -56,15 +56,108 @@ UNESP - Univerisade Estadual Paulista - Presidente Prudente\\ SEM1 2020  \\ Cels
 \vspace{0.4cm}
 
 \section{Máquina de Turing Multifita para a Arquitetura}
-\begin{verbatim}
-    A arquitetura construída consta no arquivo em anexo "trab_08.jff"
-    Ou no link: "http://github.com/gilmarfrancisco828/trab08.jff"
-\end{verbatim}
+A arquitetura construída consta no arquivo em anexo "MT\_aula\_08.jff"
+
+Ou no link: \href{https://github.com/gilmarfrancisco828/Teoria_da_Computacao/blob/master/atividade_aula_08/MT_aula_08.jff}{MT\_aula\_08.jff}.\\
+
+
+\newpage
 \section{Casos de Teste}
 
-\subsection*{Caso 4: NOT}
-\begin{Verbatim}[numbers=left,xleftmargin=8mm]
-    Carrega #1000*1101#0*1011000#1*011#10*1101000# na fita 1
+\subsection*{Caso 1: Programa que carrega o valor “111”, soma a “1” e salva no endereço “1000”.}
+
+\textbf{Entrada:}
+\begin{verbatim}
+    #1000*1000#1000*111#1001*1#0*1011000#1*100#10*1011001#11*000#100*1101000#
+\end{verbatim}
+
+\begin{Verbatim}[numbers=left,xleftmargin=1mm]
+    Carrega a entrada na fita 1
+    Inicia a fita 2 com 0
+    Busca na memória(Fita 1) o endereço 0
+    Lê a operação de LOAD do endereço 1000 no reg X(fita 3)
+    Busca na memória o endereço 1000
+    Copia o conteúdo do endereço 1000 no reg X(fita 3).
+    Incrementa PC para 1
+    Lê o conteúdo de PC, busca na memória a instrução no endereço 1
+    Lê a operação SWAP(100)
+    Realiza a troca do conteúdo de X com Y, usando a fita 5 como mediadora
+    Incrementa PC para 10
+    Lê o conteúdo de PC, busca na memória a instrução no endereço 10
+    Lê a operação de LOAD do endereço 1001 no reg X(fita 3)
+    Busca na memória o endereço 1001
+    Copia o conteúdo do endereço 1001 no reg X(fita 3).
+    Incrementa PC para 11
+    Lê o conteúdo de PC, busca na memória a instrução no endereço 11
+    Lê a operação de ADD regs X e Y
+    Copia X e Y para a fita 5
+    Realiza a soma e copia o resultado para X
+    Incrementa PC para 100
+    Lê o conteúdo de PC, busca na memória a instrução no endereço 100
+    Lê a operação de STORE X no endereço 1000
+    Escreve no começo da fita 1 a posição de memória 1000 com o valor 1000
+    Incrementa PC para 101
+    Lê o conteúdo de PC, busca na memória a instrução no endereço 101
+    Não encontra -> Halt
+    Finaliza execução
+\end{Verbatim}
+
+\textbf{Resultado:}
+\begin{verbatim}
+    #1000*1000#1000*111#1001*1#0*1011000#1*100#10*1011001#11*000#100*1101000#
+\end{verbatim}
+
+\newpage
+\subsection*{Caso 2: Programa que faz o And lógico entre os mesmos valores do caso 1 e salva no endereço “1000”.}
+\textbf{Entrada:}
+\begin{verbatim}
+    #1000*111#1001*1#0*1011000#1*100#10*1011001#11*010#100*1101000#
+\end{verbatim}
+
+\begin{Verbatim}[numbers=left,xleftmargin=1mm]
+    Carrega a entrada na fita 1
+    Inicia a fita 2 com 0
+    Busca na memória(Fita 1) o endereço 0
+    Lê a operação de LOAD do endereço 1000 no reg X(fita 3)
+    Busca na memória o endereço 1000
+    Copia o conteúdo do endereço 1000 no reg X(fita 3)
+    Incrementa PC para 1
+    Lê o conteúdo de PC, busca na memória a instrução no endereço 1
+    Lê a operação SWAP(100)
+    Realiza a troca do conteúdo de X com Y, usando a fita 5 como mediadora
+    Incrementa PC para 10
+    Lê o conteúdo de PC, busca na memória a instrução no endereço 10
+    Lê a operação LOAD(101) do endereço 1001 no reg X(fita 3)
+    Busca na memória o endereço 1001
+    Copia o conteúdo do endereço 1001 no reg X(fita 3)
+    Incrementa PC para 11
+    Lê o conteúdo de PC, busca na memória a instrução no endereço 11
+    Lê a operação AND(010)
+    Realiza o AND lógico entre X e Y, aplicando a tabela verdade
+    Armazena o resultado em X
+    Incremente PC para 100
+    Lê o conteúdo de PC, busca na memória a instrução no endereço 100
+    Lê a operação STORE(110) do conteúdo do reg X para o endereço 1000
+    Copia o conteúdo de X para o início da memória, salvo com o endereço 1000
+    Incrementa PC para 101
+    Busca a instrução no endereço 101, não encontra -> Halt
+    Finaliza execução
+\end{Verbatim}
+
+\textbf{Resultado:}
+\begin{verbatim}
+    #1000*001#1000*111#1001*1#0*1011000#1*100#10*1011001#11*010#100*1101000#
+\end{verbatim}
+
+\newpage
+\subsection*{Caso 3: Programa que faz o Not no valor “1101” e o salva no endereço “1000”.}
+\textbf{Entrada:}
+\begin{verbatim}
+    #1000*1101#0*1011000#1*011#10*1101000#
+\end{verbatim}
+
+\begin{Verbatim}[numbers=left,xleftmargin=1mm]
+    Carrega a entrada na fita 1
     Inicia a fita 2 com 0
     Busca na memória(Fita 1) o endereço 0
     Lê a operação de LOAD do endereço 1000 no reg X(fita 3)
@@ -82,6 +175,14 @@ UNESP - Univerisade Estadual Paulista - Presidente Prudente\\ SEM1 2020  \\ Cels
     Busca a instrução no endereço 11, não encontra -> Halt
     Finaliza execução
 \end{Verbatim}
+
+\textbf{Resultado:}
+\begin{verbatim}
+    #1000*0010#1000*1101#0*1011000#1*011#10*1101000#
+\end{verbatim}
+
+
+\newpage
 \section{Solução Adotada}
 
 \section*{Ciclo de Funcionamento}
@@ -94,45 +195,47 @@ As escritas na memória são feitas no início, dadas as complexidades envolvida
 
 Endereços não Encontrados fazem a MT travar, porém caso seja um endereço fornecido pelo PC e não for encontrado, a máquina finaliza a execução, vai para o estado de Halt.
 
-\section*{STORE}
+\newpage
+\subsection{Operações}
+\subsubsection*{STORE}
 Rebobina a memória, ou seja, volta para o início, e escreve da esquerda para direita, primeiro o conteúdo do registrador X, adiciona o carácter de separação "*", escreve então o endereço alvo e adiciona o carácter "\#", finalizando a adição ou sobrescrita da nova posição de memória.
 
 Então chama a operação de Incrementar o PC e busca a próxima instrução.
 
-\section*{LOAD}
+\subsubsection*{LOAD}
 Busca na memória o endereço alvo, ao encontrar, copia seu conteúdo diretamente para o registrador X.
 
 Então chama a operação de Incrementar o PC e busca a próxima instrução.
 
-\section*{JUMP}
+\subsubsection*{JUMP}
 A operação de JUMP copia o endereço presente na memória diretamente para a Fita 2(PC) e retorna para o estado de Busca de Instrução.
 
-\section*{SWAP}
+\subsubsection*{SWAP}
 A operação de SWAP troca os conteúdos dos registradores X e Y, usando a fita 5 como intermediária, primeiramente copia o conteúdo de X para a fita 5, depois copia o valor de Y para X, para então copiar o valor da fita 5 para Y.
 
 Então chama a operação de Incrementar o PC e busca a próxima instrução.
 
-\section*{NOT}
+\subsubsection*{NOT}
 A operação lógica NOT é realizada diretamente no registrador X, a MT itera sobre todos os bits e inverte seus valores diretamente na própria fita.
 
 Então chama a operação de Incrementar o PC e busca a próxima instrução.
 
-\section*{AND}
+\subsubsection*{AND}
 A operação de AND lógico é realizada da esquerda para direita, aplicando a tabela verdade do operador lógico AND simultâneamente aos registradores X e Y, quando um \textbf{branco} é encontrado em um dos registradores, zero é escrito na posição correspondente.
 
 Então chama a operação de Incrementar o PC e busca a próxima instrução.
 % COLOCAR QUAL FITA QUE É SALVO
-\section*{ADD}
+\subsubsection*{ADD}
 
 Para a operação de AND, a Fita 5 é majoritariamente utilizada, para isso é feito a cópia dos valores contidos no registrador X e Y para a Fita 5, onde a operação a ser realizada é no seguinte formato:
 \begin{verbatim}
     #b_x#b_y#d
 \end{verbatim}
-Onde $b_x$ e $b_y$ representam respectivamente os valores copiados dos registradores X e Y em binário, e $d$ representa um código para a escolha de qual será o destino do resultado, sendo os valores possíveis: F(resultado vai ser copiado no Reg. x), .
+Onde $b_x$ e $b_y$ representam respectivamente os valores copiados dos registradores X e Y em binário, e $d$ representa um código para a escolha de qual será o destino do resultado, sendo os valores possíveis: P(usado para somas com o valor de PC, ou seja, usado no incremento das instruções), F(resultado final de uma operação de soma normal ou subtração, vai ser copiado no Reg. x), S(resultado parcial de uma subtração, o carry é excluído e o valor retroalimentado somando 1).
 
 Então chama a operação de Incrementar o PC e busca a próxima instrução.
 
-\section*{SUB}
+\subsubsection*{SUB}
 
 A operação de subtração é feita reutilizando-se o a estrutura para Adição, porém a estratégia é utilizar a \textbf{soma binária com complemento de 1}, sendo assim o valor do Reg. Y é copiado para a Fita 5 com seus valores de Bits invertidos e então somado com o valor do Reg. X, o resultado é intermediário, então descarta-se o primeiro bit(carry) do resultado, dado que só trabalhamos com números positivos, esse resultado é então somado com $1$, para só então seu resultado ser salvo no Reg. X. Caso os valores de X e Y sejam iguais, a MT escreve diretamente zero no Reg X.
 
