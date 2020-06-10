@@ -1,0 +1,140 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[top = 2.5cm, bottom = 2.5cm, left = 2.5cm, right = 2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% The following two packages - multirow and booktabs - are needed to create nice looking tables.
+\usepackage{multirow} % Multirow is for tables with multiple rows within one cell.
+\usepackage{booktabs} % For even nicer tables.
+
+\usepackage{graphicx}
+
+% \usepackage{setspace}
+% \setlength{\parindent}{0in}
+
+\usepackage{float}
+
+\usepackage{fancyhdr}
+\usepackage{fancyvrb}
+\pagestyle{fancy}
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+\renewcommand{\baselinestretch}{1.5}
+
+\fancyhf{}
+
+\lhead{\footnotesize Trabalho Aula 08}
+
+\rhead{\footnotesize }
+
+\cfoot{\footnotesize \thepage}
+
+\begin{document}
+
+
+\thispagestyle{empty}
+
+\begin{tabular}{p{15.5cm}}
+
+{\large \bf Teoria da Computação} \\
+UNESP - Univerisade Estadual Paulista - Presidente Prudente\\ SEM1 2020  \\ Celso\\
+\hline
+\\
+\end{tabular}
+
+\vspace*{0.3cm}
+
+\begin{center} % Everything within the center environment is centered.
+	{\Large \bf Trab. Aula 08: Computador Digital (Von Neumann)} % <---- Don't forget to put in the right number
+	\vspace{2mm}
+
+        % YOUR NAMES GO HERE
+	{\bf Gilmar Francisco de Oliveira Santos} % <---- Fill in your names here!
+
+\end{center}
+
+\vspace{0.4cm}
+
+\section{Máquina de Turing Multifita para a Arquitetura}
+\begin{verbatim}
+    A arquitetura construída consta no arquivo em anexo "trab_08.jff"
+    Ou no link: "http://github.com/gilmarfrancisco828/trab08.jff"
+\end{verbatim}
+\section{Casos de Teste}
+
+\subsection*{Caso 4: NOT}
+\begin{Verbatim}[numbers=left,xleftmargin=8mm]
+    Carrega #1000*1101#0*1011000#1*011#10*1101000# na fita 1
+    Inicia a fita 2 com 0
+    Busca na memória(Fita 1) o endereço 0
+    Lê a operação de LOAD do endereço 1000 no reg X(fita 3)
+    Busca na memória o endereço 1000
+    Copia o conteúdo do endereço 1000 no reg X(fita 3).
+    Incrementa PC para 1
+    Lê o conteúdo de PC, busca na memória a instrução no endereço 1
+    Lê a operação NOT
+    Inverte os bits do reg X
+    Incremente PC para 10
+    Lê o conteúdo de PC, busca na memória a instrução no endereço 10
+    Lê a operação 110(STORE) do conteúdo do reg X para o endereço 1000
+    Copia o conteúdo de X para o início da memória, salvo com o endereço 1000
+    Incrementa PC para 11
+    Busca a instrução no endereço 11, não encontra -> Halt
+    Finaliza execução
+\end{Verbatim}
+\section{Solução Adotada}
+
+\section*{Ciclo de Funcionamento}
+A execução é inicializada pelo carregamento da entrada na Fita 1, que será a memória de trabalho, então o valor $0$ é pré-carregado na Fita 2, a qual será representado o PC, inicia-se então o ciclo de busca e execução de instruções, cada instrução encontrada, representada pelos 3 primeiros bits do conteúdo do endereço alvo, é executada de acordo com o que se segue abaixo, para então ocorrer uma operação de incremento do PC, usando da própria unidade de Adição, com exceção da operação de JUMP, que carrega diretamente o valor no PC, e o ciclo de busca é reiniciado.
+
+\subsection*{Gerenciamento de Memória}
+A busca é realizada na memória, Fita 1, de maneira linear, estando os endereços presentes na memória disposto de maneira aleatória, para a busca de endereços de intruções o valor utilizado é o do PC, enquanto que para endereços de variáveis, o endereço é alocado temporariamente na fita 5, para então a busca linear ser iniciada.
+
+As escritas na memória são feitas no início, dadas as complexidades envolvidas ao sobrescrever posições de memória no meio, com isso a busca de endereços sempre irá utilizar o primeiro endereço encontrado, começando sempre da direita, de modo a garantir que novos valores para as posições de memória sejam possíveis.
+
+Endereços não Encontrados fazem a MT travar, porém caso seja um endereço fornecido pelo PC e não for encontrado, a máquina finaliza a execução, vai para o estado de Halt.
+
+\section*{STORE}
+Rebobina a memória, ou seja, volta para o início, e escreve da esquerda para direita, primeiro o conteúdo do registrador X, adiciona o carácter de separação "*", escreve então o endereço alvo e adiciona o carácter "\#", finalizando a adição ou sobrescrita da nova posição de memória.
+
+Então chama a operação de Incrementar o PC e busca a próxima instrução.
+
+\section*{LOAD}
+Busca na memória o endereço alvo, ao encontrar, copia seu conteúdo diretamente para o registrador X.
+
+Então chama a operação de Incrementar o PC e busca a próxima instrução.
+
+\section*{JUMP}
+A operação de JUMP copia o endereço presente na memória diretamente para a Fita 2(PC) e retorna para o estado de Busca de Instrução.
+
+\section*{SWAP}
+A operação de SWAP troca os conteúdos dos registradores X e Y, usando a fita 5 como intermediária, primeiramente copia o conteúdo de X para a fita 5, depois copia o valor de Y para X, para então copiar o valor da fita 5 para Y.
+
+Então chama a operação de Incrementar o PC e busca a próxima instrução.
+
+\section*{NOT}
+A operação lógica NOT é realizada diretamente no registrador X, a MT itera sobre todos os bits e inverte seus valores diretamente na própria fita.
+
+Então chama a operação de Incrementar o PC e busca a próxima instrução.
+
+\section*{AND}
+A operação de AND lógico é realizada da esquerda para direita, aplicando a tabela verdade do operador lógico AND simultâneamente aos registradores X e Y, quando um \textbf{branco} é encontrado em um dos registradores, zero é escrito na posição correspondente.
+
+Então chama a operação de Incrementar o PC e busca a próxima instrução.
+% COLOCAR QUAL FITA QUE É SALVO
+\section*{ADD}
+
+Para a operação de AND, a Fita 5 é majoritariamente utilizada, para isso é feito a cópia dos valores contidos no registrador X e Y para a Fita 5, onde a operação a ser realizada é no seguinte formato:
+\begin{verbatim}
+    #b_x#b_y#d
+\end{verbatim}
+Onde $b_x$ e $b_y$ representam respectivamente os valores copiados dos registradores X e Y em binário, e $d$ representa um código para a escolha de qual será o destino do resultado, sendo os valores possíveis: F(resultado vai ser copiado no Reg. x), .
+
+Então chama a operação de Incrementar o PC e busca a próxima instrução.
+
+\section*{SUB}
+
+A operação de subtração é feita reutilizando-se o a estrutura para Adição, porém a estratégia é utilizar a \textbf{soma binária com complemento de 1}, sendo assim o valor do Reg. Y é copiado para a Fita 5 com seus valores de Bits invertidos e então somado com o valor do Reg. X, o resultado é intermediário, então descarta-se o primeiro bit(carry) do resultado, dado que só trabalhamos com números positivos, esse resultado é então somado com $1$, para só então seu resultado ser salvo no Reg. X. Caso os valores de X e Y sejam iguais, a MT escreve diretamente zero no Reg X.
+
+Então chama a operação de Incrementar o PC e busca a próxima instrução.
+\end{document}
